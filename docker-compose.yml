@@ -1,0 +1,59 @@
+version: '3'
+services:
+
+  # PHP Service
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: app
+    environment:
+      SERVICE_NAME: app
+      SERVICE_TAGS: dev
+    working_dir: /var/www/html/oolora
+    networks:
+      - app-network
+    tty: true
+    depends_on:
+      - db
+    ports:
+      - "9000:9000"
+    volumes:
+       - ./:/var/www/html/oolora
+       - ./php/local.ini:/usr/local/etc/php/conf.d/local.ini
+
+  # Nginx Service
+#  webserver:
+#    image: nginx:alpine
+#    container_name: webserver
+#    depends_on:
+#      - app
+#    ports:
+#      - "8080:80"
+#      - "8443:443"
+#    volumes:
+#      - ./:/var/www
+#      - ./nginx/conf.d/:/etc/nginx/conf.d/
+
+  # MySQL Service
+  db:
+    image: mysql:5.7.22
+    container_name: db
+    ports:
+      - "3306:3306"
+    networks:
+      - app-network
+    environment:
+      MYSQL_DATABASE: forge
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_USER: root
+      SERVICE_TAGS: dev
+      SERVICE_NAME: mysql
+    volumes:
+      - ./dbdata:/var/lib/mysql
+      - ./mysql/my.cnf:/etc/mysql/my.cnf
+
+#Docker Networks
+networks:
+  app-network:
+    driver: bridge
