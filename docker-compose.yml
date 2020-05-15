@@ -26,6 +26,8 @@ services:
   app:
     depends_on:
       - db
+    links:
+      - db:oolora_mysql
     build:
       context: .
       dockerfile: Dockerfile
@@ -37,8 +39,6 @@ services:
       SERVICE_NAME: oolora
       SERVICE_TAGS: dev
     working_dir: /var/www
-    links:
-      - db:oolora_mysql
     networks:
       oolora-network:
         aliases:
@@ -54,6 +54,8 @@ services:
   ooloraopenresty:
     depends_on:
       - app
+    links:
+      - app:oolora_app
     build:
       context: ./openresty
       dockerfile: Dockerfile
@@ -65,8 +67,6 @@ services:
       - ./openresty/ssl:/ssl
       - ./:/var/www
       - ./openresty/nginx/conf/:/nginx/conf/
-    links:
-      - app:oolora_app
     networks:
       oolora-network:
         aliases:

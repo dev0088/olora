@@ -46,6 +46,7 @@ RUN ls -alh
 # USER www
 COPY .env.example /var/www/.env
 
+# RUN php artisan cache:clear
 # Expose port 9000 and start php-fpm server
 RUN cd /var/www
 RUN composer install
