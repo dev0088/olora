@@ -4,23 +4,28 @@
 docker-compose stop
 docker-compose down
 
+# Copy env file
+FILE=.env
+if test -f "$FILE"; then
+    echo "$FILE exist"
+    cp .env.example .env
+fi
+
 # Run dockers as daemon
 docker-compose up -d --build
 
 # Install composer
-docker-compose exec app composer require doctrine/dbal
+# docker-compose exec app composer require doctrine/dbal
 docker-compose exec app composer install
 
 # Generate key
-docker-compose exec app php artisan key:generate
+yes | docker-compose exec app php artisan key:generate
 
 # Save config files
-docker-compose exec app php artisan config:cache
+yes | docker-compose exec app php artisan config:cache
 
 # Migrate database
-docker-compose exec app php artisan migrate
+yes | docker-compose exec app php artisan migrate
 
 # Remove caches
 yes | docker system prune
-
-
