@@ -6,13 +6,13 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: app
+    container_name: oolora
     environment:
-      SERVICE_NAME: app
+      SERVICE_NAME: oolora
       SERVICE_TAGS: dev
     working_dir: /var/www/html/oolora
     networks:
-      - app-network
+      - oolora_app_network
     tty: true
     depends_on:
       - db
@@ -38,11 +38,11 @@ services:
   # MySQL Service
   db:
     image: mysql:5.7.22
-    container_name: db
+    container_name: oolora_mysql
     ports:
       - "3306:3306"
     networks:
-      - app-network
+      - oolora_app_network
     environment:
       MYSQL_DATABASE: forge
       MYSQL_ROOT_PASSWORD: root
@@ -55,5 +55,5 @@ services:
 
 #Docker Networks
 networks:
-  app-network:
+  oolora_app_network:
     driver: bridge
