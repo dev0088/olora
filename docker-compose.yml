@@ -5,6 +5,7 @@ services:
     image: mysql:5.7.22
     container_name: oolora_mysql
     hostname: oolora_mysql
+    restart: always
     ports:
       - "3306:3306"
     networks:
@@ -54,6 +55,7 @@ services:
   ooloraopenresty:
     depends_on:
       - app
+      - db
     links:
       - app:oolora_app
     build:

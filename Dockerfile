@@ -15,7 +15,8 @@ RUN apt-get update && apt-get install -y \
     vim \
     unzip \
     git \
-    curl
+    curl \
+    netcat
 
 # Clear cache
 RUN apt-get clean && rm -rf /var/lib/apt/lists/*
@@ -44,12 +45,13 @@ RUN ls -alh
 
 # Change current user to www
 # USER www
-COPY .env.example /var/www/.env
+# COPY .env.example /var/www/.env
 
 # RUN php artisan cache:clear
 # Expose port 9000 and start php-fpm server
 RUN cd /var/www
-RUN composer install
+# Start up
+# RUN ./docker/startup.sh
 
 EXPOSE 9000
 CMD ["php-fpm"]
