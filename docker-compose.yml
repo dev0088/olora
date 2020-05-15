@@ -19,6 +19,7 @@ services:
       SERVICE_NAME: mysql
     volumes:
       - ./dbdata:/var/lib/mysql
+      - ./sql:/root/sql
       - ./mysql/my.cnf:/etc/mysql/my.cnf
 
   # PHP Service
@@ -27,10 +28,12 @@ services:
       context: .
       dockerfile: Dockerfile
     container_name: oolora
+    restart: unless-stopped
+    tty: true
     environment:
       SERVICE_NAME: oolora
       SERVICE_TAGS: dev
-    working_dir: /var/www/html/oolora
+    working_dir: /var/www
     links:
       - db:oolora_mysql
     networks:
@@ -43,26 +46,32 @@ services:
     ports:
       - "9000:9000"
     volumes:
-       - ./:/var/www/html/oolora
+       - ./:/var/www
        - ./php/local.ini:/usr/local/etc/php/conf.d/local.ini
 
-  # Nginx Service
-#  webserver:
-#    image: nginx:alpine
-#    container_name: webserver
-#    depends_on:
-#      - app
-#    ports:
-#      - "8080:80"
-#      - "8443:443"
-#    volumes:
-#      - ./:/var/www
-#      - ./nginx/conf.d/:/etc/nginx/conf.d/
-
-
+# Nginx Service
+  webserver:
+    image: nginx:alpine
+    container_name: webserver
+    depends_on:
+      - app
+    ports:
+      - "8000:80"
+      - "443:443"
+    volumes:
+      - ./:/var/www
+      - ./nginx/conf.d/:/etc/nginx/conf.d/
+    networks:
+      oolora-network:
+        aliases:
+          - oolora_webserver_network
 
 #Docker Networks
 networks:
   oolora-network:
     name: oolora-network
     driver: bridge
+
+volumes:
+  dbdata:
+    driver: local
