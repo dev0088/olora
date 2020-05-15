@@ -1,5 +1,25 @@
 version: '3'
 services:
+  # MySQL Service
+  db:
+    image: mysql:5.7.22
+    container_name: oolora_mysql
+    hostname: oolora_mysql
+    ports:
+      - "3306:3306"
+    networks:
+      services-network:
+        aliases:
+          - oolora_mysql_network
+    environment:
+      MYSQL_DATABASE: forge
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_USER: root
+      SERVICE_TAGS: dev
+      SERVICE_NAME: mysql
+    volumes:
+      - ./dbdata:/var/lib/mysql
+      - ./mysql/my.cnf:/etc/mysql/my.cnf
 
   # PHP Service
   app:
@@ -11,8 +31,12 @@ services:
       SERVICE_NAME: oolora
       SERVICE_TAGS: dev
     working_dir: /var/www/html/oolora
+    links:
+      - db:oolora_mysql
     networks:
-      - oolora_app_network
+      services-network:
+        aliases:
+          - oolora_app_network
     tty: true
     depends_on:
       - db
@@ -35,25 +59,10 @@ services:
 #      - ./:/var/www
 #      - ./nginx/conf.d/:/etc/nginx/conf.d/
 
-  # MySQL Service
-  db:
-    image: mysql:5.7.22
-    container_name: oolora_mysql
-    ports:
-      - "3306:3306"
-    networks:
-      - oolora_app_network
-    environment:
-      MYSQL_DATABASE: forge
-      MYSQL_ROOT_PASSWORD: root
-      MYSQL_USER: root
-      SERVICE_TAGS: dev
-      SERVICE_NAME: mysql
-    volumes:
-      - ./dbdata:/var/lib/mysql
-      - ./mysql/my.cnf:/etc/mysql/my.cnf
+
 
 #Docker Networks
 networks:
-  oolora_app_network:
+  services-network:
+    name: services-network
     driver: bridge
