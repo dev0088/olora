@@ -24,6 +24,8 @@ services:
 
   # PHP Service
   app:
+    depends_on:
+      - db
     build:
       context: .
       dockerfile: Dockerfile
@@ -42,8 +44,6 @@ services:
         aliases:
           - oolora_app_network
     tty: true
-    depends_on:
-      - db
     ports:
       - "9000:9000"
     volumes:
@@ -52,12 +52,12 @@ services:
 
   # OpenResty Service
   ooloraopenresty:
+    depends_on:
+      - app
     build:
       context: ./openresty
       dockerfile: Dockerfile
     container_name: ooloraopenresty
-    depends_on:
-      - app
     ports:
       - "8000:80"
       - "443:443"
