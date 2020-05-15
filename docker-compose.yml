@@ -28,6 +28,7 @@ services:
       context: .
       dockerfile: Dockerfile
     container_name: oolora
+    hostname: oolora_app
     restart: unless-stopped
     tty: true
     environment:
@@ -49,22 +50,44 @@ services:
        - ./:/var/www
        - ./php/local.ini:/usr/local/etc/php/conf.d/local.ini
 
-# Nginx Service
-  webserver:
-    image: nginx:alpine
-    container_name: webserver
+  # OpenResty Service
+  ooloraopenresty:
+    build:
+      context: ./openresty
+      dockerfile: Dockerfile
+    container_name: ooloraopenresty
     depends_on:
       - app
     ports:
       - "8000:80"
       - "443:443"
     volumes:
+      - ./openresty/ssl:/ssl
       - ./:/var/www
-      - ./nginx/conf.d/:/etc/nginx/conf.d/
+      - ./openresty/nginx/conf/:/nginx/conf/
+    links:
+      - app:oolora_app
     networks:
       oolora-network:
         aliases:
-          - oolora_webserver_network
+          - oolora_openresty_network
+
+# Nginx Service
+  # webserver:
+  #   image: nginx:alpine
+  #   container_name: webserver
+  #   depends_on:
+  #     - app
+  #   ports:
+  #     - "8000:80"
+  #     - "443:443"
+  #   volumes:
+  #     - ./:/var/www
+  #     - ./nginx/conf.d/:/etc/nginx/conf.d/
+  #   networks:
+  #     oolora-network:
+  #       aliases:
+  #         - oolora_webserver_network
 
 #Docker Networks
 networks:
