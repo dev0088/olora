@@ -8,7 +8,7 @@ services:
     ports:
       - "3306:3306"
     networks:
-      services-network:
+      oolora-network:
         aliases:
           - oolora_mysql_network
     environment:
@@ -34,7 +34,7 @@ services:
     links:
       - db:oolora_mysql
     networks:
-      services-network:
+      oolora-network:
         aliases:
           - oolora_app_network
     tty: true
@@ -63,6 +63,6 @@ services:
 
 #Docker Networks
 networks:
-  services-network:
-    name: services-network
+  oolora-network:
+    name: oolora-network
     driver: bridge
