@@ -44,8 +44,10 @@ RUN ls -alh
 
 # Change current user to www
 # USER www
+COPY .env.example /var/www/.env
 
 # Expose port 9000 and start php-fpm server
+RUN cd /var/www
 RUN composer install
 
 EXPOSE 9000
