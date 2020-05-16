@@ -30,5 +30,12 @@ docker-compose exec app php artisan config:cache
 # Migrate database
 docker-compose exec app php artisan migrate
 
+# Renew certificates for this domain
+docker-compose exec ooloraopenresty openssl req -new -newkey rsa:2048 \
+  -days 3650 -nodes -x509 \
+  -subj '/CN=app.oolora.com' \
+  -keyout /etc/ssl/app.oolora.com.key \
+  -out /etc/ssl/app.oolora.com.crt
+
 # Remove caches
 docker system prune

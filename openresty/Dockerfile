@@ -41,10 +41,10 @@ RUN apk add --no-cache --virtual .build-deps \
     && mkdir -p /var/cache/nginx
     # && rm -rf /usr/local/openresty/nginx/conf/* \
     
-RUN openssl req -new -newkey rsa:2048 -days 3650 -nodes -x509 \
-  -subj '/CN=app.oolora.com' \
-  -keyout /etc/ssl/app.oolora.com.key \
-  -out /etc/ssl/app.oolora.com.crt
+# RUN openssl req -new -newkey rsa:2048 -days 3650 -nodes -x509 \
+#   -subj '/CN=app.oolora.com' \
+#   -keyout /etc/ssl/app.oolora.com.key \
+#   -out /etc/ssl/app.oolora.com.crt
 
 # use self signed ssl certifacte to start nginx
 COPY ./ssl /etc/resty-auto-ssl
