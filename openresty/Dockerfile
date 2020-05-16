@@ -48,6 +48,9 @@ RUN apk add --no-cache --virtual .build-deps \
 
 # use self signed ssl certifacte to start nginx
 COPY ./ssl /etc/resty-auto-ssl
+COPY /ssl/app.oolora.com.key  /etc/ssl/
+COPY /ssl/app.oolora.com.crt  /etc/ssl/
+
 COPY ./nginx/conf/nginx.conf /usr/local/openresty/nginx/conf/nginx.conf
 
 # CMD ["openresty -s reload"]
