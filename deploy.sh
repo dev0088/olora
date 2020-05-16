@@ -5,10 +5,13 @@ docker-compose stop
 docker-compose down
 
 # Copy env file
-FILE=.env
-if test -f "$FILE"; then
-    echo "$FILE exist"
-    cp .env.example .env
+ENVFILE="./.env"
+EXENVFILE="./.env.example"
+
+if test -f "$ENVFILE"; then
+    echo "$ENVFILE exist"
+else
+    cp "$EXENVFILE" "$ENVFILE"
 fi
 
 # Run dockers as daemon
@@ -19,13 +22,13 @@ docker-compose up -d --build
 docker-compose exec app composer install
 
 # Generate key
-yes | docker-compose exec app php artisan key:generate
+docker-compose exec app php artisan key:generate
 
 # Save config files
-yes | docker-compose exec app php artisan config:cache
+docker-compose exec app php artisan config:cache
 
 # Migrate database
-yes | docker-compose exec app php artisan migrate
+docker-compose exec app php artisan migrate
 
 # Remove caches
-yes | docker system prune
+docker system prune
